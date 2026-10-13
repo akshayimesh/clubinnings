@@ -34,6 +34,18 @@ export async function findTeam(teamId: string, clubId: string, db: Queryable = p
   return rows[0] ? toTeam(rows[0]) : null;
 }
 
+/**
+ * Locks the team row until the transaction ends, so concurrent roster changes on one team
+ * (e.g. two captain swaps) run one after another. Returns false when the team isn't in the club.
+ */
+export async function lockTeam(db: Queryable, teamId: string, clubId: string): Promise<boolean> {
+  const { rowCount } = await db.query('SELECT 1 FROM teams WHERE id = $1 AND club_id = $2 FOR UPDATE', [
+    teamId,
+    clubId,
+  ]);
+  return (rowCount ?? 0) > 0;
+}
+
 export async function createTeam(clubId: string, name: string, db: Queryable = pool): Promise<Team> {
   const { rows } = await db.query<TeamRow>(
     'INSERT INTO teams (club_id, name) VALUES ($1, $2) RETURNING id, club_id, name, created_at, 0 AS player_count',

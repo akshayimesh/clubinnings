@@ -143,6 +143,21 @@ describe('PATCH /api/teams/:teamId/players/:playerId', () => {
     expect(entries.find((e) => e.player.id === asha.id)?.isCaptain).toBe(false);
   });
 
+  it('handles concurrent captain swaps one after another, leaving one captain', async () => {
+    const { token, team, asha, ben } = await setupClub();
+    const cara = (await request(app).post('/api/players').set(bearer(token)).send({ fullName: 'Cara Jones' })).body.player;
+    await addPlayer(token, team.id, { playerId: asha.id, isCaptain: true });
+    await addPlayer(token, team.id, { playerId: ben.id });
+    await addPlayer(token, team.id, { playerId: cara.id });
+
+    const swap = (playerId: string) =>
+      request(app).patch(`/api/teams/${team.id}/players/${playerId}`).set(bearer(token)).send({ isCaptain: true });
+    const results = await Promise.all([swap(ben.id), swap(cara.id), swap(ben.id), swap(cara.id)]);
+
+    expect(results.map((r) => r.status)).toEqual([200, 200, 200, 200]);
+    expect((await roster(token, team.id)).filter((e) => e.isCaptain)).toHaveLength(1);
+  });
+
   it('returns 409 for a taken shirt number', async () => {
     const { token, team, asha, ben } = await setupClub();
     await addPlayer(token, team.id, { playerId: asha.id, shirtNumber: 7 });

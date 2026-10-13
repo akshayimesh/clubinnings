@@ -5,14 +5,14 @@ import type { AddRosterEntryInput, UpdateRosterEntryInput } from '../validation/
 import { isForeignKeyViolation, uniqueViolation } from './pgErrors.js';
 import { findPlayer } from './player.repository.js';
 import * as roster from './roster.repository.js';
-import { findTeam } from './team.repository.js';
+import { lockTeam } from './team.repository.js';
 
 /** Adds a club player to a club team. Making them captain replaces the current captain atomically. */
 export async function addPlayer(clubId: string, teamId: string, input: AddRosterEntryInput): Promise<RosterEntry> {
   try {
     return await withTransaction(async (tx) => {
       // Sequential: a pg client runs one query at a time.
-      if (!(await findTeam(teamId, clubId, tx))) throw notFound('Team not found');
+      if (!(await lockTeam(tx, teamId, clubId))) throw notFound('Team not found');
       if (!(await findPlayer(input.playerId, clubId, tx))) throw notFound('Player not found');
 
       const isCaptain = input.isCaptain ?? false;
@@ -38,6 +38,7 @@ export async function updateEntry(
 ): Promise<RosterEntry> {
   try {
     return await withTransaction(async (tx) => {
+      if (!(await lockTeam(tx, teamId, clubId))) throw notFound('Player is not on this team');
       if (patch.isCaptain) await roster.clearCaptain(tx, teamId, clubId);
       const entry = await roster.updateEntry(tx, { teamId, playerId, clubId }, patch);
       // Throwing rolls back the captain change above.
@@ -56,6 +57,8 @@ export async function removePlayer(clubId: string, teamId: string, playerId: str
 function mapRosterError(err: unknown, shirtNumber: number | null | undefined): unknown {
   const constraint = uniqueViolation(err);
   if (constraint === 'team_players_pkey') return conflict('Player is already on this team');
+  // Only reachable if a captain change somehow bypasses the team lock.
+  if (constraint === 'team_players_captain_unique') return conflict('The team captain changed at the same time, try again');
   if (constraint === 'team_players_shirt_unique') {
     return conflict(`Shirt number ${shirtNumber} is already taken on this team`);
   }
