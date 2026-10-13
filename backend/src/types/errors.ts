@@ -16,3 +16,6 @@ export const unauthorized = (message = 'Authentication required') =>
 export const notFound = (message = 'Resource not found') => new AppError(404, 'NOT_FOUND', message);
 
 export const conflict = (message: string) => new AppError(409, 'CONFLICT', message);
+
+export const forbidden = (message = 'You do not have permission to do this') =>
+  new AppError(403, 'FORBIDDEN', message);
