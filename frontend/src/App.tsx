@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { DashboardPage } from './pages/DashboardPage';
 import { LoginPage } from './pages/LoginPage';
@@ -31,11 +31,17 @@ export function App() {
         path="/teams/:teamId"
         element={
           <ProtectedRoute>
-            <TeamPage />
+            <TeamRoute />
           </ProtectedRoute>
         }
       />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
+}
+
+/** Remounts TeamPage per team so its state never leaks from one team to the next. */
+function TeamRoute() {
+  const { teamId } = useParams();
+  return <TeamPage key={teamId} />;
 }

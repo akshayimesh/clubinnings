@@ -112,6 +112,8 @@ export function TeamPage() {
                   if (playerId === NEW_PLAYER) {
                     const { player } = await playersApi.create(input.newName);
                     setPlayers((prev) => [...prev, player]);
+                    // Point the form at the new player so a retry after a failed add doesn't create a duplicate.
+                    input.onPlayerCreated(player.id);
                     playerId = player.id;
                   }
                   await teamsApi.addPlayer(team.id, { playerId, shirtNumber: input.shirtNumber });
@@ -194,6 +196,7 @@ interface AddPlayerInput {
   playerId: string;
   newName: string;
   shirtNumber?: number;
+  onPlayerCreated: (playerId: string) => void;
 }
 
 function AddPlayerForm({
@@ -211,7 +214,16 @@ function AddPlayerForm({
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!(await onAdd({ playerId, newName, shirtNumber: shirt === '' ? undefined : Number(shirt) }))) return;
+    const added = await onAdd({
+      playerId,
+      newName,
+      shirtNumber: shirt === '' ? undefined : Number(shirt),
+      onPlayerCreated: (id) => {
+        setPlayerId(id);
+        setNewName('');
+      },
+    });
+    if (!added) return;
     setPlayerId('');
     setNewName('');
     setShirt('');
