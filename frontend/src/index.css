@@ -201,3 +201,126 @@ button:disabled {
   font-weight: 600;
   text-transform: capitalize;
 }
+
+/* App pages */
+.topbar-left {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.nav a.active,
+.nav a:hover {
+  color: var(--text);
+}
+
+.heading-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}
+
+.inline-form button {
+  padding: 0.55rem 1rem;
+}
+
+.inline-form .error {
+  flex-basis: 100%;
+}
+
+select {
+  font: inherit;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.shirt-input {
+  width: 5.5rem;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+}
+
+.list li + li {
+  border-top: 1px solid var(--border);
+}
+
+.table {
+  width: 100%;
+  margin-top: 1rem;
+  border-collapse: collapse;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.table th {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+}
+
+.danger-button {
+  padding: 0.5rem 1rem;
+  background: var(--danger);
+}
+
+.danger-button:hover:not(:disabled) {
+  background: var(--danger);
+  filter: brightness(0.9);
+}
+
+.danger-link {
+  color: var(--danger);
+}

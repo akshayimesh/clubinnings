@@ -26,3 +26,27 @@ export interface AuthContext {
   clubId: string;
   role: Role;
 }
+
+export interface Team {
+  id: string;
+  clubId: string;
+  name: string;
+  playerCount: number;
+  createdAt: Date;
+}
+
+export interface Player {
+  id: string;
+  clubId: string;
+  /** Linked user account in the same club, if any. */
+  userId: string | null;
+  fullName: string;
+  createdAt: Date;
+}
+
+export interface RosterEntry {
+  player: Player;
+  shirtNumber: number | null;
+  isCaptain: boolean;
+  addedAt: Date;
+}
