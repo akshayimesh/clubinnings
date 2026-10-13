@@ -1,6 +1,6 @@
 # 001 – Team rosters
 
-- **Status**: Draft
+- **Status**: Implemented (branch `feature/team-rosters`)
 - **Author**: Akshay Soni
 - **Date**: 2026-10-13
 
@@ -124,21 +124,21 @@ Down migration: drop `team_players`, then `players`, then `teams`.
 
 ## Acceptance criteria
 
-- [ ] AC1 – Given an admin or coach, when they `POST /api/teams` with a valid name, then 201 and the team is stored with their `club_id`.
-- [ ] AC2 – Given a player, when they call any write endpoint, then 403 `FORBIDDEN` and nothing changes.
-- [ ] AC3 – Given a coach, when they `DELETE /api/teams/:teamId`, then 403; given an admin, then 204 and the team's roster entries are gone.
-- [ ] AC4 – Given a team name that already exists in the club with different case, when a team is created or renamed to it, then 409; the same name in another club succeeds.
-- [ ] AC5 – Given an empty or 61-character name, a missing `fullName`, a non-UUID `playerId`, or a shirt number outside 0–999, then 400 `VALIDATION_ERROR` with field details.
-- [ ] AC6 – Given a player already on a team, when they are added again, then 409.
-- [ ] AC7 – Given shirt number 7 is taken on a team, when another player is given 7 on that team, then 409; number 7 on a different team succeeds.
-- [ ] AC8 – Given a team with a captain, when another player is made captain, then 200 and the old captain's `isCaptain` is `false`.
-- [ ] AC9 – Given a user in club A, when they read, update or delete a team of club B, or add a club-B player to a club-A team, then 404 and club B's data is unchanged.
-- [ ] AC10 – `GET /api/teams` and `GET /api/players` return only the caller's club's rows; `GET /api/teams/:teamId` returns the roster with player details and correct `playerCount`.
-- [ ] AC11 – A non-UUID `:teamId` or `:playerId` returns 404, not 500.
-- [ ] AC12 – Every endpoint returns 401 without a valid token.
-- [ ] AC13 – Unit tests cover the team/roster services with repositories mocked (captain swap, not-found and conflict paths); `requireRole` has unit tests.
-- [ ] AC14 – Migration up creates the three tables; down removes them cleanly.
-- [ ] AC15 – The web app lists teams, creates one, opens a team, adds/removes a player and sets the captain; a player login sees no edit controls. `make test` passes.
+- [x] AC1 – Given an admin or coach, when they `POST /api/teams` with a valid name, then 201 and the team is stored with their `club_id`.
+- [x] AC2 – Given a player, when they call any write endpoint, then 403 `FORBIDDEN` and nothing changes.
+- [x] AC3 – Given a coach, when they `DELETE /api/teams/:teamId`, then 403; given an admin, then 204 and the team's roster entries are gone.
+- [x] AC4 – Given a team name that already exists in the club with different case, when a team is created or renamed to it, then 409; the same name in another club succeeds.
+- [x] AC5 – Given an empty or 61-character name, a missing `fullName`, a non-UUID `playerId`, or a shirt number outside 0–999, then 400 `VALIDATION_ERROR` with field details.
+- [x] AC6 – Given a player already on a team, when they are added again, then 409.
+- [x] AC7 – Given shirt number 7 is taken on a team, when another player is given 7 on that team, then 409; number 7 on a different team succeeds.
+- [x] AC8 – Given a team with a captain, when another player is made captain, then 200 and the old captain's `isCaptain` is `false`.
+- [x] AC9 – Given a user in club A, when they read, update or delete a team of club B, or add a club-B player to a club-A team, then 404 and club B's data is unchanged.
+- [x] AC10 – `GET /api/teams` and `GET /api/players` return only the caller's club's rows; `GET /api/teams/:teamId` returns the roster with player details and correct `playerCount`.
+- [x] AC11 – A non-UUID `:teamId` or `:playerId` returns 404, not 500.
+- [x] AC12 – Every endpoint returns 401 without a valid token.
+- [x] AC13 – Unit tests cover the team/roster services with repositories mocked (captain swap, not-found and conflict paths); `requireRole` has unit tests.
+- [x] AC14 – Migration up creates the three tables; down removes them cleanly.
+- [ ] AC15 – (UI not yet checked by hand; `make test` passes) The web app lists teams, creates one, opens a team, adds/removes a player and sets the captain; a player login sees no edit controls. `make test` passes.
 
 ## Out of scope
 
